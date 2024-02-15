@@ -20,11 +20,14 @@ class Bots:
     bot_token: str
     path_save: str
     # admin_id: str
-
+@dataclass
+class User:
+    folderId: str
 @dataclass
 class Settings:
     bots :Bots
     server: Server
+    user: User
 
 def get_settings(path: str):
     env = Env()
@@ -41,6 +44,9 @@ def get_settings(path: str):
             user = env.str("USER"),
             password = env.str("PASSWORD"),
             db_name = env.str("DB_NAME")
+        ),
+        user = User(
+            folderId = env.str("folderId")
         )
     )
 def Connect():

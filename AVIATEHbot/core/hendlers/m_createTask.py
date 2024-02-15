@@ -22,8 +22,8 @@ async def GenerateArr_ID(tagForm:str,call: CallbackQuery, state: FSMContext):
     data = await state.get_data()
 
     temporaryArray_ID = list()
-    if data.get("RESPONSIBLE_ID") != None:
-        temporaryArray_ID = data.get("RESPONSIBLE_ID")
+    if data.get(tagForm) != None:
+        temporaryArray_ID = data.get(tagForm)
     if call.data in temporaryArray_ID:
         temporaryArray_ID.remove(call.data)
     else:
