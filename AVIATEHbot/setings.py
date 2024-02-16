@@ -5,7 +5,7 @@ from dataclasses import dataclass
 # from pybitrix24 import Bitrix24
 
 
-bx24 = Bitrix24('https://eurotechpromg.bitrix24.ru/rest/308/2gnr740m6pfywjof/')
+# bx24 = Bitrix24('https://eurotechpromg.bitrix24.ru/rest/308/2gnr740m6pfywjof/')
 
 @dataclass
 class Server:
@@ -59,5 +59,13 @@ def Connect():
         cursorclass=pymysql.cursors.DictCursor
     )
     return connect
+
+from aiogram.fsm.state import StatesGroup, State
+
+class User_settings(StatesGroup):
+    url = State()
+    folderID = State()
+
+
 settings = get_settings('input')
 print(settings)

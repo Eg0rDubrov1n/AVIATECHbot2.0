@@ -15,10 +15,13 @@ from core.keyboards.inline import iKB_CreateTask, iKB_User, iKB_s_User, Callende
 from core.keyboards.reply import rKB_MainTask
 from core.unit.Bitrix24 import writeInBitrix24
 from core.unit.state import s_Data, s_CreateTask
+from setings import User_settings
 
 
 async def createTask(message: Message, state: FSMContext):
     await state.clear()
+    if (not User_settings.url or not User_settings.folderID):
+        return None
     try:
         await message.answer(text=f"Здравствуйте",
             reply_markup=await iKB_CreateTask(state)
@@ -79,7 +82,7 @@ async def createTask_send(call: CallbackQuery, state: FSMContext, bot : Bot):
     else:
         await call.message.answer(text="Error: Неуказанно имя!!!")
 
-async def exit(call: CallbackQuery, state: FSMContext):
+async def _exit(call: CallbackQuery, state: FSMContext):
     await state.clear()
     # await call.message.edit_reply_markup()
     await call.message.edit_text(text="closed")

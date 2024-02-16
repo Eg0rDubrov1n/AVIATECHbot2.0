@@ -22,16 +22,17 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, R
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types.callback_query import CallbackQuery
 
+from core.hendlers.Settings.settings import SettingsStart
 from core.hendlers.createTask import createTask, createTask_TITLE, createTask_RESPONSIBLE, createTask_DESCRIPTION, \
     createTask_UF_TASK_WEBDAV_FILES, createTask_send, createTask_exit_In_iKB_CreateTask, createTask_DEADLINE, \
-    createTask_UF_CRM_TASK
+    createTask_UF_CRM_TASK, _exit
 from core.hendlers.m_createTask import m_createTask_RESPONSIBLE, m_createTask_TITLE, m_createTask_DESCRIPTION, \
     m_createTask_UF_TASK_WEBDAV_FILES, m_createTask_DEADLINE, m_createTask_UF_CRM_TASK
 from core.keyboards.inline import iKB_s_User_UP, iKB_s_User_Down, Callender, iKB_Callender_Last_mounth, \
     iKB_Callender_Next_mounth, iKB_s_Lead_UP, iKB_s_Lead_Down
 from core.unit.SQL import getSQLOneCommand
 from core.unit.state import s_Data, s_CreateTask
-from setings import settings, Connect, bx24
+from setings import settings, Connect
 
 
 async def Registration(message: Message):
@@ -59,6 +60,7 @@ async def Start():
 
 
     dp.message.register(createTask,F.text.lower() == "cоздать задачу")
+    dp.message.register(SettingsStart,F.text.lower() == "настройки")
 
     dp.callback_query.register(createTask_TITLE, F.data == 'createTask_TITLE')  # Отправить названия Задачи
     dp.callback_query.register(createTask_RESPONSIBLE, F.data == 'createTask_RESPONSIBLE')  # Выбрать специалиста
@@ -68,6 +70,7 @@ async def Start():
     dp.callback_query.register(createTask_DEADLINE, F.data == 'createTask_DEADLINE')  # Отправить ZIP-file
     dp.callback_query.register(createTask_send, F.data.lower() == 'send')  # Сохранить
     dp.callback_query.register(createTask_exit_In_iKB_CreateTask, F.data == 'exit_In_iKB_CreateTask')  # Сохранить
+    dp.callback_query.register(_exit, F.data == 'exit')  # Сохранить
 
     dp.callback_query.register(iKB_s_Lead_UP, s_CreateTask.UF_CRM_TASK, F.data == '>')  # Отправить ZIP-file
     dp.callback_query.register(iKB_s_Lead_Down, s_CreateTask.UF_CRM_TASK, F.data == '<')  # Отправить ZIP-file

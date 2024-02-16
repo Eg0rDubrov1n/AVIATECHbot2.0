@@ -1,10 +1,11 @@
+import requests
 from aiogram.fsm.context import FSMContext
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 import calendar
 
+from core.unit.Bitrix24 import POSTbitrix24
 from core.unit.state import s_Data
-from setings import bx24
 
 
 async def iKB_CreateTask(state: FSMContext):
@@ -23,7 +24,7 @@ async def iKB_CreateTask(state: FSMContext):
 async def iKB_s_User(state: FSMContext):# Работа с Bitrix!!!
     data = await state.get_data()
     TasksKeyboardIn = InlineKeyboardBuilder()
-    for User in bx24.callMethod('user.get')[10 * (s_Data.quantity - 1) :10 * s_Data.quantity]:
+    for User in POSTbitrix24("user.get",{"select": [ "LAST_NAME", "NAME", "SECOND_NAME","ID"]})[10 * (s_Data.quantity - 1) :10 * s_Data.quantity]:
         TasksKeyboardIn.button(text=f'{User.get("LAST_NAME")} {User.get("NAME")} {User.get("SECOND_NAME")}{["🔴","🟢"][(data.get("RESPONSIBLE_ID") != None and str(User.get("ID")) in data.get("RESPONSIBLE_ID"))]}', callback_data = str(User.get("ID")))
 
     TasksKeyboardIn.button(text="<", callback_data="<")
@@ -53,7 +54,7 @@ async def iKB_s_User_Down(call: CallbackQuery, state: FSMContext):# Работа
 
 async def iKB_User():# Работа с Bitrix!!!
     TasksKeyboardIn = InlineKeyboardBuilder()
-    for User in bx24.callMethod('user.get'):
+    for User in POSTbitrix24("user.get",{"select": [ "LAST_NAME", "NAME", "SECOND_NAME","ID"]})[10 * (s_Data.quantity - 1) :10 * s_Data.quantity]:
         TasksKeyboardIn.button(text=f'Name:{User.get("Name")}', callback_data=str(User.get("ID")))
     TasksKeyboardIn.button(text="exit", callback_data="exitMainKey")
     TasksKeyboardIn.adjust(1)
@@ -103,7 +104,8 @@ async def iKB_Callender_Last_mounth(call: CallbackQuery, state: FSMContext):# Р
 async def iKB_s_Lead(state: FSMContext):# Работа с Bitrix!!!
     data = await state.get_data()
     TasksKeyboardIn = InlineKeyboardBuilder()
-    for User in bx24.callMethod('crm.lead.list')[10 * (s_Data.quantity - 1) :10 * s_Data.quantity]:
+    # print(requests.post('https://eurotechpromg.bitrix24.ru/rest/308/2gnr740m6pfywjof/crm.lead.list.json',json={"select": [ "ID", "TITLE"],"start": "3"}, timeout=60).json())
+    for User in POSTbitrix24("crm.lead.list",{"select": [ "ID", "TITLE"]})[10 * (s_Data.quantity - 1) :10 * s_Data.quantity]:
         TasksKeyboardIn.button(text=f'{User.get("TITLE")}{["🔴","🟢"][(data.get("UF_CRM_TASK") != None and str(User.get("ID")) in data.get("UF_CRM_TASK"))]}', callback_data=str(User.get("ID")))
 
     TasksKeyboardIn.button(text="<", callback_data="<")
