@@ -13,7 +13,6 @@ from core.unit.state import s_Data
 
 async def m_createTask_TITLE(message: Message, state: FSMContext, bot: Bot) -> None:
     print("State UPDETE TITLE")
-
     await state.update_data(TITLE=message.text)
     await bot.edit_message_text(text="ОБНОВА", reply_markup=await iKB_CreateTask(state),
                                 chat_id=s_Data.CHAT_ID, message_id=s_Data.MESSEGE_ID)

@@ -22,7 +22,8 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message, R
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types.callback_query import CallbackQuery
 
-from core.hendlers.Settings.settings import SettingsStart
+from core.hendlers.Settings.m_settings import m_settings_URL, m_settings_folderID
+from core.hendlers.Settings.settings import SettingsStart, settings_folderId, settings_URL
 from core.hendlers.createTask import createTask, createTask_TITLE, createTask_RESPONSIBLE, createTask_DESCRIPTION, \
     createTask_UF_TASK_WEBDAV_FILES, createTask_send, createTask_exit_In_iKB_CreateTask, createTask_DEADLINE, \
     createTask_UF_CRM_TASK, _exit
@@ -30,37 +31,31 @@ from core.hendlers.m_createTask import m_createTask_RESPONSIBLE, m_createTask_TI
     m_createTask_UF_TASK_WEBDAV_FILES, m_createTask_DEADLINE, m_createTask_UF_CRM_TASK
 from core.keyboards.inline import iKB_s_User_UP, iKB_s_User_Down, Callender, iKB_Callender_Last_mounth, \
     iKB_Callender_Next_mounth, iKB_s_Lead_UP, iKB_s_Lead_Down
+from core.keyboards.reply import rKB_MainTask
 from core.unit.SQL import getSQLOneCommand
-from core.unit.state import s_Data, s_CreateTask
+from core.unit.state import s_Data, s_CreateTask, User
 from setings import settings, Connect
 
 
 async def Registration(message: Message):
     s_Data.CHAT_ID = message.chat.id
-    connect = Connect()
-    with connect.cursor() as cursor:
-        if not getSQLOneCommand(f"SELECT EXISTS(SELECT * FROM `colleagues` where ChatID = '{message.chat.id}');"):
-            # await state.set_state(Specialist.ID)
-           # I await message.answer(text="Выберите себя в списке",
-           #                       reply_markup=await iKB_User()
-           #                       )
-            pass
-async def Check(message: Message, state: FSMContext):
-    print(bx24.callMethod('crm.lead.list')[0])
-    # await state.set_state(s_CreateTask.DEADLINE)
-    # await message.answer(text=f"{s_Data.YEAR}\n{calendar.month_name[s_Data.MONTH]}",
-    #                      reply_markup=await Callender()
-    #                      )
+    await message.answer(text=f"Здравствуйте",
+            reply_markup=rKB_MainTask
+        )
 async def Start():
     dp = Dispatcher()
     bot = Bot(settings.bots.bot_token)
 
-    dp.message.register(Registration,Command(commands=["start","registration"]))
-    dp.message.register(Check,Command(commands=["check"]))
+    dp.message.register(Registration,Command(commands=["start"]))
+    # dp.message.register(Check,Command(commands=["check"]))
 
 
-    dp.message.register(createTask,F.text.lower() == "cоздать задачу")
-    dp.message.register(SettingsStart,F.text.lower() == "настройки")
+    dp.message.register(createTask,F.text == "Создать задачу")
+    dp.message.register(SettingsStart,F.text == "Настройки")
+
+    dp.callback_query.register(settings_URL, F.data == 'url')  # Отправить названия Задачи
+    dp.callback_query.register(settings_folderId, F.data == 'folderID')  # Отправить названия Задачи
+
 
     dp.callback_query.register(createTask_TITLE, F.data == 'createTask_TITLE')  # Отправить названия Задачи
     dp.callback_query.register(createTask_RESPONSIBLE, F.data == 'createTask_RESPONSIBLE')  # Выбрать специалиста
@@ -86,6 +81,8 @@ async def Start():
     dp.callback_query.register(m_createTask_RESPONSIBLE, s_CreateTask.RESPONSIBLE_ID)
     dp.callback_query.register(m_createTask_UF_CRM_TASK, s_CreateTask.UF_CRM_TASK)
 
+    dp.message.register(m_settings_URL, User.URL)
+    dp.message.register(m_settings_folderID, User.folderId)
 
     try:
         await dp.start_polling(bot)

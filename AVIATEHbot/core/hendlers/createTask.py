@@ -14,13 +14,13 @@ from aiogram.types import Message, CallbackQuery
 from core.keyboards.inline import iKB_CreateTask, iKB_User, iKB_s_User, Callender, iKB_s_Lead
 from core.keyboards.reply import rKB_MainTask
 from core.unit.Bitrix24 import writeInBitrix24
+from core.unit.SQL import countSQL
 from core.unit.state import s_Data, s_CreateTask
-from setings import User_settings
 
 
 async def createTask(message: Message, state: FSMContext):
-    await state.clear()
-    if (not User_settings.url or not User_settings.folderID):
+    # await state.clear()
+    if 1 > countSQL("users", "ChatID", message.chat.id):
         return None
     try:
         await message.answer(text=f"Здравствуйте",

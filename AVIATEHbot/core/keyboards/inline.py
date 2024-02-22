@@ -24,7 +24,7 @@ async def iKB_CreateTask(state: FSMContext):
 async def iKB_s_User(state: FSMContext):# Работа с Bitrix!!!
     data = await state.get_data()
     TasksKeyboardIn = InlineKeyboardBuilder()
-    for User in POSTbitrix24("user.get",{"select": [ "LAST_NAME", "NAME", "SECOND_NAME","ID"]})[10 * (s_Data.quantity - 1) :10 * s_Data.quantity]:
+    for User in POSTbitrix24("user.get",{"select": [ "LAST_NAME", "NAME", "SECOND_NAME","ID"],"start": f"{10 * (s_Data.quantity - 1)}"})[:10]:
         TasksKeyboardIn.button(text=f'{User.get("LAST_NAME")} {User.get("NAME")} {User.get("SECOND_NAME")}{["🔴","🟢"][(data.get("RESPONSIBLE_ID") != None and str(User.get("ID")) in data.get("RESPONSIBLE_ID"))]}', callback_data = str(User.get("ID")))
 
     TasksKeyboardIn.button(text="<", callback_data="<")
@@ -43,9 +43,8 @@ async def iKB_s_User_UP(call: CallbackQuery, state: FSMContext):# Работа �
     )
 
 async def iKB_s_User_Down(call: CallbackQuery, state: FSMContext):# Работа с Bitrix!!!
-    s_Data.quantity -= 1
-    if s_Data.quantity < 1:
-        s_Data.quantity = 1
+    if s_Data.quantity > 1:
+        s_Data.quantity -= 1
         await call.message.edit_reply_markup(
             reply_markup=await iKB_s_User(state)
         )
@@ -122,9 +121,8 @@ async def iKB_s_Lead_UP(call: CallbackQuery, state: FSMContext):# Работа �
     )
 
 async def iKB_s_Lead_Down(call: CallbackQuery, state: FSMContext):# Работа с Bitrix!!!
-    s_Data.quantity -= 1
-    if s_Data.quantity < 1:
-        s_Data.quantity = 1
+    if s_Data.quantity > 1:
+        s_Data.quantity -= 1
         await call.message.edit_reply_markup(
             reply_markup=await iKB_s_Lead(state)
         )

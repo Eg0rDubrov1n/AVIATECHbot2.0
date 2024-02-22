@@ -21,13 +21,13 @@ class Bots:
     path_save: str
     # admin_id: str
 @dataclass
-class User:
+class User_f:
     folderId: str
 @dataclass
 class Settings:
     bots :Bots
     server: Server
-    user: User
+    user: User_f
 
 def get_settings(path: str):
     env = Env()
@@ -45,7 +45,7 @@ def get_settings(path: str):
             password = env.str("PASSWORD"),
             db_name = env.str("DB_NAME")
         ),
-        user = User(
+        user = User_f(
             folderId = env.str("folderId")
         )
     )
@@ -62,9 +62,6 @@ def Connect():
 
 from aiogram.fsm.state import StatesGroup, State
 
-class User_settings(StatesGroup):
-    url = State()
-    folderID = State()
 
 
 settings = get_settings('input')
