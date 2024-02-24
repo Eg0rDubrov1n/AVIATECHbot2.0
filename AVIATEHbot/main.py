@@ -24,12 +24,16 @@ from aiogram.types.callback_query import CallbackQuery
 
 from core.hendlers.Settings.m_settings import m_settings_URL, m_settings_folderID
 from core.hendlers.Settings.settings import SettingsStart, settings_folderId, settings_URL
+from core.hendlers.Viewing_tasks.Viewing_tasks import viewingTasks, viewingTaskInfo, \
+    viewingTasks_exit_In_iKB_viewingTasks
 from core.hendlers.createTask import createTask, createTask_TITLE, createTask_RESPONSIBLE, createTask_DESCRIPTION, \
     createTask_UF_TASK_WEBDAV_FILES, createTask_send, createTask_exit_In_iKB_CreateTask, createTask_DEADLINE, \
     createTask_UF_CRM_TASK, _exit
 from core.hendlers.m_createTask import m_createTask_RESPONSIBLE, m_createTask_TITLE, m_createTask_DESCRIPTION, \
     m_createTask_UF_TASK_WEBDAV_FILES, m_createTask_DEADLINE, m_createTask_UF_CRM_TASK, \
     m_createTask_UF_TASK_WEBDAV_FILES_del
+from core.keyboards.Viewing_tasks.inline_viewing_tasks import iKB_s_Tasks, iKB_s_Tasks_UP, iKB_s_Tasks_Down, \
+    iKB_s_Info_Task
 from core.keyboards.inline import iKB_s_User_UP, iKB_s_User_Down, Callender, iKB_Callender_Last_mounth, \
     iKB_Callender_Next_mounth, iKB_s_Lead_UP, iKB_s_Lead_Down
 from core.keyboards.reply import rKB_MainTask
@@ -43,6 +47,8 @@ async def Registration(message: Message):
     await message.answer(text=f"Здравствуйте",
             reply_markup=rKB_MainTask
         )
+async def Check(message: Message, state: FSMContext, bot : Bot):
+    # print(message.user_shared)
 async def Start():
     dp = Dispatcher()
     bot = Bot(settings.bots.bot_token)
@@ -52,10 +58,13 @@ async def Start():
 
 
     dp.message.register(createTask,F.text == "Создать задачу")
+    dp.message.register(viewingTasks,F.text == "Мои задачи")
+
     dp.message.register(SettingsStart,F.text == "Настройки")
 
     dp.callback_query.register(settings_URL, F.data == 'url')  # Отправить названия Задачи
     dp.callback_query.register(settings_folderId, F.data == 'folderID')  # Отправить названия Задачи
+
 
 
     dp.callback_query.register(createTask_TITLE, F.data == 'createTask_TITLE')  # Отправить названия Задачи
@@ -66,7 +75,9 @@ async def Start():
     dp.callback_query.register(createTask_DEADLINE, F.data == 'createTask_DEADLINE')  # Отправить ZIP-file
     dp.callback_query.register(createTask_send, F.data.lower() == 'send')  # Сохранить
     dp.callback_query.register(createTask_exit_In_iKB_CreateTask, F.data == 'exit_In_iKB_CreateTask')  # Сохранить
-    dp.callback_query.register(_exit, F.data == 'exit')  # Сохранить
+    dp.callback_query.register(_exit, F.data == 'exit')
+    dp.callback_query.register(viewingTasks_exit_In_iKB_viewingTasks, F.data == 'exit_iKB_s_Tasks')
+
 
     dp.callback_query.register(iKB_s_Lead_UP, s_CreateTask.UF_CRM_TASK, F.data == '>')  # Отправить ZIP-file
     dp.callback_query.register(iKB_s_Lead_Down, s_CreateTask.UF_CRM_TASK, F.data == '<')  # Отправить ZIP-file
@@ -74,6 +85,8 @@ async def Start():
     dp.callback_query.register(iKB_s_User_Down, s_CreateTask.RESPONSIBLE_ID, F.data == '<')  # Отправить ZIP-file
     dp.callback_query.register(iKB_Callender_Next_mounth, s_CreateTask.DEADLINE, F.data == '>')  # Отправить DEADLINE
     dp.callback_query.register(iKB_Callender_Last_mounth, s_CreateTask.DEADLINE, F.data == '<')  # Отправить DEADLINE
+    dp.callback_query.register(iKB_s_Tasks_UP, s_Data.Task, F.data == '>')  # Отправить DEADLINE
+    dp.callback_query.register(iKB_s_Tasks_Down, s_Data.Task, F.data == '<')
 
     dp.message.register(m_createTask_TITLE, s_CreateTask.TITLE)  # Ввод названия
     dp.message.register(m_createTask_DESCRIPTION, s_CreateTask.DESCRIPTION)  # Ввод Описания
@@ -86,6 +99,8 @@ async def Start():
 
     dp.message.register(m_settings_URL, User.URL)
     dp.message.register(m_settings_folderID, User.folderId)
+
+    dp.callback_query.register(viewingTaskInfo, s_Data.Task)
 
     try:
         await dp.start_polling(bot)

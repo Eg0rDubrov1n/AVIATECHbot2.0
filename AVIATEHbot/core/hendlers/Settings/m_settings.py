@@ -32,6 +32,7 @@ async def m_settings_URL(message: Message, state: FSMContext, bot: Bot):
         return None
     await state.update_data(URL=message.text)
     setSQL("users","URL",message.text)
+    setSQL("users","UserIDbx24",message.text.split('/')[-3])
 
 
 async def m_settings_folderID(message: Message, state: FSMContext):

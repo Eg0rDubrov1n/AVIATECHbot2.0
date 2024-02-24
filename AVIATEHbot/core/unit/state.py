@@ -16,6 +16,7 @@ class s_Data(StatesGroup):
     quantity = 1
     YEAR = DATA_NOW.year
     MONTH = DATA_NOW.month
+    Task = State()
 class User(StatesGroup):
     URL = State()
     folderId = State()

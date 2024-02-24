@@ -39,7 +39,7 @@ async def iKB_s_User(state: FSMContext):# Работа с Bitrix!!!
 async def iKB_s_User_UP(call: CallbackQuery, state: FSMContext):# Работа с Bitrix!!!
     s_Data.quantity += 1
     await call.message.edit_reply_markup(
-        reply_markup=await iKB_s_User(state)
+        reply_markup=await call.data[1]
     )
 
 async def iKB_s_User_Down(call: CallbackQuery, state: FSMContext):# Работа с Bitrix!!!

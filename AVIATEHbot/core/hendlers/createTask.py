@@ -32,10 +32,10 @@ async def createTask(message: Message, state: FSMContext):
         await message.answer(text=f"НОВАЯ ЗАДАЧА",
             reply_markup=await iKB_CreateTask(state)
         )
-    except Exception:
-        print(Exception)
+    except Exception as error:
+        print(error)
     s_Data.MESSEGE_ID =  str(int(message.message_id) + 1)
-    s_Data.CHAT_ID = message.chat.id
+    # s_Data.CHAT_ID = message.chat.id
 
 async def createTask_TITLE(call: CallbackQuery, state: FSMContext):
     await call.answer("Введите название проекта")
