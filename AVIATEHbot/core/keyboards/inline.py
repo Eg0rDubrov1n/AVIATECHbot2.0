@@ -12,12 +12,12 @@ async def iKB_CreateTask(state: FSMContext):
     data = await state.get_data()
     # state:FSMContext = Form.name_Tasks
     MainKeyBoard = InlineKeyboardMarkup(
-        inline_keyboard=[[InlineKeyboardButton(text=f'Название {["🔴","🟢"][data.get("TITLE") != None]}', url=None, callback_data='createTask_TITLE')],
-                         [InlineKeyboardButton(text=f'Назначте специалистов {["🔴","🟢"][data.get("RESPONSIBLE_ID") != None]}', url=None, callback_data='createTask_RESPONSIBLE')],
-                         [InlineKeyboardButton(text=f'Описание {["🔴","🟢"][data.get("DESCRIPTION") != None]}', url=None, callback_data='createTask_DESCRIPTION')],
-                         [InlineKeyboardButton(text=f'Загрузить файл {["🔴","🟢"][data.get("UF_TASK_WEBDAV_FILES") != None]}', url=None, callback_data='createTask_UF_TASK_WEBDAV_FILES')],
-                         [InlineKeyboardButton(text=f'CRM {["🔴", "🟢"][data.get("UF_CRM_TASK") != None]}', url=None,callback_data='createTask_UF_CRM_TASK')],
-                         [InlineKeyboardButton(text=f'Дата сдачи {["🔴","🟢"][data.get("DEADLINE") != None]}', url=None, callback_data='createTask_DEADLINE')],
+        inline_keyboard=[[InlineKeyboardButton(text=f'{["🔴","🟢"][data.get("TITLE") != None]} Название', url=None, callback_data='createTask_TITLE')],
+                         [InlineKeyboardButton(text=f'{["🔴","🟢"][data.get("RESPONSIBLE_ID") != None]} Назначте специалистов', url=None, callback_data='createTask_RESPONSIBLE')],
+                         [InlineKeyboardButton(text=f'{["🔴","🟢"][data.get("DESCRIPTION") != None]} Описание', url=None, callback_data='createTask_DESCRIPTION')],
+                         [InlineKeyboardButton(text=f'{["🔴","🟢"][data.get("UF_TASK_WEBDAV_FILES") != None]} Загрузить файл', url=None, callback_data='createTask_UF_TASK_WEBDAV_FILES')],
+                         [InlineKeyboardButton(text=f'{["🔴", "🟢"][data.get("UF_CRM_TASK") != None]} CRM', url=None,callback_data='createTask_UF_CRM_TASK')],
+                         [InlineKeyboardButton(text=f'{["🔴","🟢"][data.get("DEADLINE") != None]} Дата сдачи', url=None, callback_data='createTask_DEADLINE')],
                          [InlineKeyboardButton(text='Send', url=None, callback_data='send'), InlineKeyboardButton(text='Exit', url=None, callback_data='exit')]])
     return MainKeyBoard
 
@@ -25,7 +25,7 @@ async def iKB_s_User(state: FSMContext):# Работа с Bitrix!!!
     data = await state.get_data()
     TasksKeyboardIn = InlineKeyboardBuilder()
     for User in POSTbitrix24("user.get",{"select": [ "LAST_NAME", "NAME", "SECOND_NAME","ID"],"start": f"{10 * (s_Data.quantity - 1)}"})[:10]:
-        TasksKeyboardIn.button(text=f'{User.get("LAST_NAME")} {User.get("NAME")} {User.get("SECOND_NAME")}{["🔴","🟢"][(data.get("RESPONSIBLE_ID") != None and str(User.get("ID")) in data.get("RESPONSIBLE_ID"))]}', callback_data = str(User.get("ID")))
+        TasksKeyboardIn.button(text=f'{["🔴","🟢"][(data.get("RESPONSIBLE_ID") != None and str(User.get("ID")) in data.get("RESPONSIBLE_ID"))]} {User.get("LAST_NAME")} {User.get("NAME")} {User.get("SECOND_NAME")}', callback_data = str(User.get("ID")))
 
     TasksKeyboardIn.button(text="<", callback_data="<")
     TasksKeyboardIn.adjust(1)
@@ -105,7 +105,7 @@ async def iKB_s_Lead(state: FSMContext):# Работа с Bitrix!!!
     TasksKeyboardIn = InlineKeyboardBuilder()
     # print(requests.post('https://eurotechpromg.bitrix24.ru/rest/308/2gnr740m6pfywjof/crm.lead.list.json',json={"select": [ "ID", "TITLE"],"start": "3"}, timeout=60).json())
     for User in POSTbitrix24("crm.lead.list",{"select": [ "ID", "TITLE"]})[10 * (s_Data.quantity - 1) :10 * s_Data.quantity]:
-        TasksKeyboardIn.button(text=f'{User.get("TITLE")}{["🔴","🟢"][(data.get("UF_CRM_TASK") != None and str(User.get("ID")) in data.get("UF_CRM_TASK"))]}', callback_data=str(User.get("ID")))
+        TasksKeyboardIn.button(text=f'{["🔴","🟢"][(data.get("UF_CRM_TASK") != None and str(User.get("ID")) in data.get("UF_CRM_TASK"))]} {User.get("TITLE")}', callback_data=str(User.get("ID")))
 
     TasksKeyboardIn.button(text="<", callback_data="<")
     TasksKeyboardIn.adjust(1)

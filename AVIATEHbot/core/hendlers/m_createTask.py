@@ -12,14 +12,12 @@ from core.unit.state import s_Data
 
 
 async def m_createTask_TITLE(message: Message, state: FSMContext, bot: Bot) -> None:
-    print("State UPDETE TITLE")
     await state.update_data(TITLE=message.text)
-    await bot.edit_message_text(text="ОБНОВА", reply_markup=await iKB_CreateTask(state),
+    await bot.edit_message_text(text="Новая задача", reply_markup=await iKB_CreateTask(state),
                                 chat_id=s_Data.CHAT_ID, message_id=s_Data.MESSEGE_ID)
 
 async def GenerateArr_ID(tagForm:str,call: CallbackQuery, state: FSMContext):
     data = await state.get_data()
-
     temporaryArray_ID = list()
     if data.get(tagForm) != None:
         temporaryArray_ID = data.get(tagForm)
@@ -44,21 +42,18 @@ async def m_createTask_UF_CRM_TASK(call: CallbackQuery, state: FSMContext,bot:Bo
 
 
 async def m_createTask_DESCRIPTION(message: Message, state: FSMContext, bot:Bot) -> None:
-    print("State UPDETE DESCRIPTION")
     await state.update_data(DESCRIPTION=message.text)
-    await bot.edit_message_text(text="ОБНОВА", reply_markup=await iKB_CreateTask(state),
+    await bot.edit_message_text(text="Новая задача", reply_markup=await iKB_CreateTask(state),
                                 chat_id=s_Data.CHAT_ID, message_id=s_Data.MESSEGE_ID)
 
 async def m_createTask_UF_TASK_WEBDAV_FILES(message: Message, bot : Bot, state: FSMContext):
-    print("State UPDETE UF_TASK_WEBDAV_FILES")
-
     await state.update_data(UF_TASK_WEBDAV_FILES=message.document.file_id)
-    await bot.edit_message_text(text="ОБНОВА", reply_markup=await iKB_CreateTask(state),
+    await bot.edit_message_text(text="Новая задача", reply_markup=await iKB_CreateTask(state),
                                 chat_id=s_Data.CHAT_ID, message_id=s_Data.MESSEGE_ID)
 
 async def m_createTask_DEADLINE(call: CallbackQuery, bot : Bot, state: FSMContext):
-    print("State UPDETE UF_TASK_WEBDAV_FILES")
-
+    if call.data in "None":
+        return None
     await state.update_data(DEADLINE=call.data)
-    await bot.edit_message_text(text="ОБНОВА", reply_markup=await iKB_CreateTask(state),
+    await bot.edit_message_text(text="Новая задача", reply_markup=await iKB_CreateTask(state),
                                 chat_id=s_Data.CHAT_ID, message_id=s_Data.MESSEGE_ID)

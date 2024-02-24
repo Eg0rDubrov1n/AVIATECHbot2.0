@@ -22,7 +22,7 @@ from core.unit.state import s_Data, s_CreateTask, User
 async def SettingsStart(message: Message, state: FSMContext):
     await state.clear()
 
-    await message.answer(text=f"Здравствуйте",
+    await message.answer(text=f"НАСТРОЙКИ",
             reply_markup=SettingsKeyBoard)
 
     s_Data.MESSEGE_ID =  str(int(message.message_id) + 1)
