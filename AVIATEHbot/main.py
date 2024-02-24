@@ -28,7 +28,8 @@ from core.hendlers.createTask import createTask, createTask_TITLE, createTask_RE
     createTask_UF_TASK_WEBDAV_FILES, createTask_send, createTask_exit_In_iKB_CreateTask, createTask_DEADLINE, \
     createTask_UF_CRM_TASK, _exit
 from core.hendlers.m_createTask import m_createTask_RESPONSIBLE, m_createTask_TITLE, m_createTask_DESCRIPTION, \
-    m_createTask_UF_TASK_WEBDAV_FILES, m_createTask_DEADLINE, m_createTask_UF_CRM_TASK
+    m_createTask_UF_TASK_WEBDAV_FILES, m_createTask_DEADLINE, m_createTask_UF_CRM_TASK, \
+    m_createTask_UF_TASK_WEBDAV_FILES_del
 from core.keyboards.inline import iKB_s_User_UP, iKB_s_User_Down, Callender, iKB_Callender_Last_mounth, \
     iKB_Callender_Next_mounth, iKB_s_Lead_UP, iKB_s_Lead_Down
 from core.keyboards.reply import rKB_MainTask
@@ -77,6 +78,8 @@ async def Start():
     dp.message.register(m_createTask_TITLE, s_CreateTask.TITLE)  # Ввод названия
     dp.message.register(m_createTask_DESCRIPTION, s_CreateTask.DESCRIPTION)  # Ввод Описания
     dp.message.register(m_createTask_UF_TASK_WEBDAV_FILES, s_CreateTask.UF_TASK_WEBDAV_FILES, F.document)  # Ввод Zip file
+    dp.callback_query.register(m_createTask_UF_TASK_WEBDAV_FILES_del, s_CreateTask.UF_TASK_WEBDAV_FILES)
+
     dp.callback_query.register(m_createTask_DEADLINE, s_CreateTask.DEADLINE)
     dp.callback_query.register(m_createTask_RESPONSIBLE, s_CreateTask.RESPONSIBLE_ID)
     dp.callback_query.register(m_createTask_UF_CRM_TASK, s_CreateTask.UF_CRM_TASK)

@@ -104,8 +104,8 @@ async def iKB_s_Lead(state: FSMContext):# Работа с Bitrix!!!
     data = await state.get_data()
     TasksKeyboardIn = InlineKeyboardBuilder()
     # print(requests.post('https://eurotechpromg.bitrix24.ru/rest/308/2gnr740m6pfywjof/crm.lead.list.json',json={"select": [ "ID", "TITLE"],"start": "3"}, timeout=60).json())
-    for User in POSTbitrix24("crm.lead.list",{"select": [ "ID", "TITLE"]})[10 * (s_Data.quantity - 1) :10 * s_Data.quantity]:
-        TasksKeyboardIn.button(text=f'{["🔴","🟢"][(data.get("UF_CRM_TASK") != None and str(User.get("ID")) in data.get("UF_CRM_TASK"))]} {User.get("TITLE")}', callback_data=str(User.get("ID")))
+    for Lead in POSTbitrix24("crm.lead.list",{"select": [ "ID", "TITLE"]})[10 * (s_Data.quantity - 1) :10 * s_Data.quantity]:
+        TasksKeyboardIn.button(text=f'{["🔴","🟢"][(data.get("UF_CRM_TASK") != None and str(Lead.get("ID")) in data.get("UF_CRM_TASK"))]} {Lead.get("TITLE")}', callback_data=str(Lead.get("ID")))
 
     TasksKeyboardIn.button(text="<", callback_data="<")
     TasksKeyboardIn.adjust(1)
@@ -126,3 +126,17 @@ async def iKB_s_Lead_Down(call: CallbackQuery, state: FSMContext):# Работа
         await call.message.edit_reply_markup(
             reply_markup=await iKB_s_Lead(state)
         )
+
+async def iKB_s_Fils(state: FSMContext):# Работа с Bitrix!!!
+    data = await state.get_data()
+    TasksKeyboardIn = InlineKeyboardBuilder()
+    print("iKB_s_Fils")
+    print(requests.post('https://eurotechpromg.bitrix24.ru/rest/308/2gnr740m6pfywjof/crm.lead.list.json',json={"select": [ "ID", "TITLE"],"start": "3"}, timeout=60).json())
+    for FileName in data.get("UF_TASK_WEBDAV_FILES").keys():
+        # print(FileName,FileId)
+        TasksKeyboardIn.button(text=f'{FileName}', callback_data=FileName)
+    # TasksKeyboardIn.button(text="<", callback_data="<")
+    # TasksKeyboardIn.button(text=">", callback_data=">")
+    TasksKeyboardIn.button(text="exit", callback_data="exit_In_iKB_CreateTask")
+    TasksKeyboardIn.adjust(1)
+    return TasksKeyboardIn.as_markup()

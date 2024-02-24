@@ -25,28 +25,34 @@ def POSTbitrix24(command,property):
 async def uploadToDisk(data:dict = None, bot : Bot = None):
     if 1 > countSQL("users", "ChatID", s_Data.CHAT_ID):
         return None
-    file_id = data.get('UF_TASK_WEBDAV_FILES')
-    file = await bot.get_file(file_id)
+    filsID = list()
+    for file_id in data.get('UF_TASK_WEBDAV_FILES').values():
+        file = await bot.get_file(file_id)
 
-    file_path, file_name = file.file_path.split("/")
+        file_path, file_name = file.file_path.split("/")
 
-    directoryTemp=f"C:/Windows/Temp/{file_path}"
+        directoryTemp=f"C:/Windows/Temp/{file_path}"
 
-    newNameFile= f"{data.get('TITLE')}{time.time()}{file_name[file_name.rfind('.'):]}"
+        newNameFile= f"{data.get('TITLE')}{time.time()}{file_name[file_name.rfind('.'):]}"
 
-    directoryTempFile=f"C:/Windows/Temp/{file_path}/{file_name}"
+        directoryTempFile=f"C:/Windows/Temp/{file_path}/{file_name}"
+        try:
+            os.mkdir(directoryTemp)
+        except Exception as error:
+            shutil.rmtree(directoryTemp)
+            os.mkdir(directoryTemp)
 
-    os.mkdir(directoryTemp)
-    await bot.download_file(f"{file_path}/{file_name}", directoryTempFile)
-    with open(directoryTempFile, 'rb') as image_file:
-        params2 = {
-            "id": getSQL("users",["FolderID"],"ChatID",s_Data.CHAT_ID)["FolderID"],
-            "data": {"NAME": f"{newNameFile}"},
-            "fileContent": [file_name,base64.b64encode(image_file.read()).decode()]
-        }
-        r = requests.post(f'{getSQL("users",["URL"],"ChatID",s_Data.CHAT_ID)["URL"]}disk.folder.uploadfile.json',json=params2, timeout=60).json()
-    shutil.rmtree(directoryTemp)
-    return r.get("result").get("ID")
+
+        await bot.download_file(f"{file_path}/{file_name}", directoryTempFile)
+        with open(directoryTempFile, 'rb') as image_file:
+            params2 = {
+                "id": getSQL("users",["FolderID"],"ChatID",s_Data.CHAT_ID)["FolderID"],
+                "data": {"NAME": f"{newNameFile}"},
+                "fileContent": [file_name,base64.b64encode(image_file.read()).decode()]
+            }
+            filsID.append('n' + str(requests.post(f'{getSQL("users",["URL"],"ChatID",s_Data.CHAT_ID)["URL"]}disk.folder.uploadfile.json',json=params2, timeout=60).json().get("result").get("ID")))
+        shutil.rmtree(directoryTemp)
+    return filsID
 
 async def writeInBitrix24(data:dict = None, bot : Bot = None):
     params = {"fields":
@@ -59,8 +65,8 @@ async def writeInBitrix24(data:dict = None, bot : Bot = None):
               }
     if data.get("UF_TASK_WEBDAV_FILES") != None:
         FileID = await uploadToDisk(data,bot)
-        params["fields"]["UF_TASK_WEBDAV_FILES"] = [f"n{FileID}"]
-    print(params.items())
+        params["fields"]["UF_TASK_WEBDAV_FILES"] = FileID
+    print("PARAM",params.items())
     for User in data.get("RESPONSIBLE_ID"):
         params["fields"]["RESPONSIBLE_ID"] = User
         print(requests.post(f'{getSQL("users",["URL"],"ChatID",s_Data.CHAT_ID)["URL"]}tasks.task.add.json',json = params, timeout = 60).json())
