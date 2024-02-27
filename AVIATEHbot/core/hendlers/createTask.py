@@ -16,7 +16,7 @@ from core.keyboards.Settings.inline_Settings import SettingsKeyBoard
 from core.keyboards.inline import iKB_CreateTask, iKB_User, iKB_s_User, Callender, iKB_s_Lead, iKB_s_Fils
 from core.keyboards.reply import rKB_MainTask
 from core.unit.Bitrix24 import writeInBitrix24
-from core.unit.SQL import countSQL
+from core.unit.SQL import countSQL, getSQL
 from core.unit.state import s_Data, s_CreateTask
 
 
@@ -60,6 +60,9 @@ async def createTask_DESCRIPTION(call: CallbackQuery, state: FSMContext):
     await state.set_state(s_CreateTask.DESCRIPTION)
 
 async def createTask_UF_TASK_WEBDAV_FILES(call: CallbackQuery, state: FSMContext, bot : Bot):
+    if None == getSQL("users", ["FolderID"], "ChatID",s_Data.CHAT_ID)["FolderID"]:
+        await call.message.answer(text=f"Вы не настроили доступ к файлам")
+        return None
     await call.answer("Загрузите файл")
     await state.set_state(s_CreateTask.UF_TASK_WEBDAV_FILES)
     data = await state.get_data()

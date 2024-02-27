@@ -130,8 +130,8 @@ async def iKB_s_Lead_Down(call: CallbackQuery, state: FSMContext):# Работа
 async def iKB_s_Fils(state: FSMContext):# Работа с Bitrix!!!
     data = await state.get_data()
     TasksKeyboardIn = InlineKeyboardBuilder()
-    print("iKB_s_Fils")
-    print(requests.post('https://eurotechpromg.bitrix24.ru/rest/308/2gnr740m6pfywjof/crm.lead.list.json',json={"select": [ "ID", "TITLE"],"start": "3"}, timeout=60).json())
+    # print("iKB_s_Fils")
+    # print(requests.post('https://eurotechpromg.bitrix24.ru/rest/308/2gnr740m6pfywjof/crm.lead.list.json',json={"select": [ "ID", "TITLE"],"start": "3"}, timeout=60).json())
     for FileName in data.get("UF_TASK_WEBDAV_FILES").keys():
         # print(FileName,FileId)
         TasksKeyboardIn.button(text=f'{FileName}', callback_data=FileName)

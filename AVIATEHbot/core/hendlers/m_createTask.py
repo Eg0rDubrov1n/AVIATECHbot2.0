@@ -29,7 +29,7 @@ async def GenerateArr_ID(tagForm:str,element: CallbackQuery, state: FSMContext):
 
 
 async def m_createTask_RESPONSIBLE(call: CallbackQuery, state: FSMContext,bot:Bot):
-    print("State UPDETE RESPONSIBLE")
+    # print("State UPDETE RESPONSIBLE")
     await state.update_data(RESPONSIBLE_ID= await GenerateArr_ID("RESPONSIBLE_ID",call.data,state))
     await call.message.edit_reply_markup(
         reply_markup=await iKB_s_User(state)
@@ -49,7 +49,7 @@ async def m_createTask_DESCRIPTION(message: Message, state: FSMContext, bot:Bot)
 
 async def Add_ID_in_Dict(tagForm:str,key:CallbackQuery,values: CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    print("key,values-->",key,values)
+    # print("key,values-->",key,values)
     temporaryDict_ID = dict()
     if data.get(tagForm) != None:
         temporaryDict_ID = data.get(tagForm)
@@ -59,7 +59,7 @@ async def Add_ID_in_Dict(tagForm:str,key:CallbackQuery,values: CallbackQuery, st
 
 async def Pop_ID_in_Dict(tagForm:str,key:CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    print("key,values-->",key)
+    # print("key,values-->",key)
     temporaryDict_ID = dict()
     if data.get(tagForm) != None:
         temporaryDict_ID = data.get(tagForm)

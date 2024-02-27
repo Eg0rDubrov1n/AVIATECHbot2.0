@@ -44,7 +44,7 @@ async def viewingTaskInfo(call: CallbackQuery, state: FSMContext,bot:Bot):
     # print(requests.post(f'{getSQL("users", ["URL"], "ChatID", s_Data.CHAT_ID)["URL"]}{"tasks.task.get"}.json',
     #               json={"select": ["TITLE", "DESCRIPTION", "STATUS", "DEADLINE"]},
     #               timeout=60).json())
-    print(info)
+    # print(info)
     # await state.update_data(Task=call.data)
     # state.clear()
     await bot.edit_message_text(text=f'<strong>{info.get("title")}\n\n</strong>'

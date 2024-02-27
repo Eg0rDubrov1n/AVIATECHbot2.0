@@ -66,7 +66,7 @@ async def writeInBitrix24(data:dict = None, bot : Bot = None):
     if data.get("UF_TASK_WEBDAV_FILES") != None:
         FileID = await uploadToDisk(data,bot)
         params["fields"]["UF_TASK_WEBDAV_FILES"] = FileID
-    print("PARAM",params.items())
+    # print("PARAM",params.items())
     for User in data.get("RESPONSIBLE_ID"):
         params["fields"]["RESPONSIBLE_ID"] = User
         print(requests.post(f'{getSQL("users",["URL"],"ChatID",s_Data.CHAT_ID)["URL"]}tasks.task.add.json',json = params, timeout = 60).json())

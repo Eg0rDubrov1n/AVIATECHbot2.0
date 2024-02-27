@@ -4,13 +4,14 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 import calendar
 
 from core.unit.Bitrix24 import POSTbitrix24
+from core.unit.SQL import getSQL
 from core.unit.state import s_Data
 
 async def iKB_s_Tasks(state: FSMContext):# Работа с Bitrix!!!
     data = await state.get_data()
     TasksKeyboardIn = InlineKeyboardBuilder()
 
-    for Task in POSTbitrix24("tasks.task.list",{"order":{"DEADLINE":'asc'},"filter": {"RESPONSIBLE_ID" : "308"},"select": [ "ID", "TITLE","RESPONSIBLE_ID"],"start": f"{10 * (s_Data.quantity - 1)}"})["tasks"]:
+    for Task in POSTbitrix24("tasks.task.list",{"order":{"DEADLINE":'asc'},"filter": {"RESPONSIBLE_ID" : getSQL("users", ["UserIDbx24"], "ChatID", s_Data.CHAT_ID)["UserIDbx24"]},"select": [ "ID", "TITLE","RESPONSIBLE_ID"],"start": f"{10 * (s_Data.quantity - 1)}"})["tasks"]:
         TasksKeyboardIn.button(text=f'{Task.get("title")}', callback_data = str(Task.get("id")))
 
     TasksKeyboardIn.button(text="<", callback_data="<")

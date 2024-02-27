@@ -47,13 +47,16 @@ async def Registration(message: Message):
     await message.answer(text=f"Здравствуйте",
             reply_markup=rKB_MainTask
         )
-async def Check(message: Message, state: FSMContext, bot : Bot):
-    # print(message.user_shared)
+async def Help(message: Message, bot : Bot):
+    await message.answer(text=f"Здравствуйте! Прежде чем начать работу с ботом, его необходимо настроить. Для этого посмотрите короткое обучающее видео.\n\nСейчас бот находится на стадии тестирования. Мы выявляем и устраняем ошибки, улучшаем его функционал. Если вы обнаружите какие-либо проблемы или недочеты, пожалуйста, сообщите о них нашей службе поддержки(мне) или напрямую мне.\n\n\nhttps://disk.yandex.ru/i/HHg-wR23vw1zMQ",
+                         reply_markup=rKB_MainTask
+                         )
 async def Start():
     dp = Dispatcher()
     bot = Bot(settings.bots.bot_token)
 
     dp.message.register(Registration,Command(commands=["start"]))
+    dp.message.register(Help,Command(commands=["help"]))
     # dp.message.register(Check,Command(commands=["check"]))
 
 
